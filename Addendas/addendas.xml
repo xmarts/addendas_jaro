@@ -1,0 +1,205 @@
+<!-- Addenda Chedraui -->
+
+<?xml version="1.0"?>
+<template name="Addenda Chedraui" t-name="add.addenda_chedarui01">
+  <Addenda>
+    <Documento>
+      <fechaEntregaRequerida t-field="record.field_sales.date_of_deli" />
+      <numeroOrden t-field="record.field_sales.number_order" />
+      <fechaPedidoCliente t-field="record.date_invoice" />
+    </Documento>
+  </Addenda>
+</template>
+
+<!-- Addenda Walmart -->
+
+<?xml version="1.0"?>
+<template name="Addenda Walmart" t-name="add.addenda_walmart01">
+  <Addenda>
+    <Documento>
+      <fechaEntregaRequerida t-field="record.field_sales.date_of_deli" />
+      <numeroOrden t-field="record.field_sales.number_order" />
+      <fechaPedidoCliente t-field="record.date_invoice" />
+    </Documento>
+  </Addenda>
+</template>
+
+<!-- Addenda Soriana (Factura normal) -->
+
+<?xml version="1.0"?>
+<template name="Addenda Soriana (Factura normal)" t-name="add.addenda_sorianaFN01">
+  <Addenda>
+    <Documento>
+      <fechaEntregaRequerida t-field="record.field_sales.date_of_deli" />
+      <numeroOrden t-field="record.field_sales.number_order" />
+      <citaSoriana t-field="record.field_sales.number_appoi" />
+    </Documento>
+  </Addenda>
+</template>
+
+<!-- Addenda Soriana (Factura extemporanea) -->
+
+<?xml version="1.0"?>
+<template name="Addenda Chedraui" t-name="add.addenda_soriana01">
+  <Addenda>
+    <Documento>
+      <fechaEntregaRequerida t-field="record.field_sales.date_of_deli" />
+      <numeroOrden t-field="record.field_sales.number_order" />
+      <citaSoriana t-field="record.field_sales.number_appoi" />
+      <folioNotaEntrada t-field="record.field_sales.folio_note_entry" />
+    </Documento>
+  </Addenda>
+</template>
+
+<!-- Addenda SuperPrecio -->
+
+<?xml version="1.0"?>
+<template name="Addenda SuperPrecio" t-name="add.addenda_superprecio01">
+  <Addenda>
+    <Documento>
+      <fechaEntregaRequerida t-field="record.field_sales.date_of_deli" />
+      <numeroOrden t-field="record.field_sales.number_order" />
+      <fechaPedidoCliente t-field="record.date_invoice" />
+      <camppAddic t-field="record.field_sales.field_add_capture" />
+    </Documento>
+  </Addenda>
+</template>
+
+
+<!-- Addenda Farmacia Guadalajara -->
+
+<?xml version="1.0"?>
+<template name="Addenda Farmacia Guadalajara" t-name="add.addenda_farmaciaG01">
+  <Addenda>
+    <Documento>
+      <numeroOrden t-field="record.field_sales.number_order" />
+    </Documento>
+  </Addenda>
+</template>
+
+<!-- Addenda San Francisco de Asis -->
+
+<?xml version="1.0"?>
+<template name="Addenda San Francisco de Asis" t-name="add.addenda_sanfranciscoDA01">
+  <Addenda>
+    <Documento>
+      <fechaEntregaRequerida t-field="record.field_sales.date_of_deli" />
+      <numeroOrden t-field="record.field_sales.number_order" />
+      <fechaPedidoCliente t-field="record.date_invoice" />
+      <folioReciboMercancia>0</folioReciboMercancia>
+      <fechaFolioReciboMercancia t-field="record.date_invoice" />
+    </Documento>
+  </Addenda>
+</template>
+
+
+<!-- Addenda Tiendas Tres B -->
+
+<?xml version="1.0"?>
+<template name="Addenda Tiendas Tres B" t-name="add.addenda_tiendas3B01">
+  <Addenda>
+    <Documento>
+      <fechaEntregaRequerida t-field="record.field_sales.date_of_deli" />
+      <numeroOrden t-field="record.field_sales.number_order" />
+      <numeroTienda t-field="record.partner_id.number_store" />
+    </Documento>
+  </Addenda>
+</template>
+
+
+<!-- Addenda 7/24 -->
+
+<?xml version="1.0"?>
+<template name="Addenda 7 / 24" t-name="add.addenda_7/24_01">
+  <Addenda>
+    <Documento>
+      <fechaEntregaRequerida t-field="record.field_sales.date_of_deli" />
+      <numeroOrden t-field="record.field_sales.number_order" />
+    </Documento>
+  </Addenda>
+</template>
+
+<!-- Addenda Proveedora del panadero -->
+
+<?xml version="1.0"?>
+<template name="Addenda 7 / 24" t-name="add.addenda_7/24_01">
+  <Addenda>
+    <Documento>
+      <fechaEntregaRequerida t-field="record.date_invoice" />
+      <numeroOrden t-field="record.field_sales.number_order" />
+      <numeroTienda t-field="record.partner_id.number_store" />
+    </Documento>
+  </Addenda>
+</template>
+
+<!-- Addenda Pruebas -->
+
+<?xml version="1.0"?>
+
+<ap tipoComprobante="FE" plazoPago="90 dias" observaciones="Ninguna">
+  
+</ap>
+
+<!-- Addenda SuperPrecio(ORG) -->
+
+<?xml version="1.0"?>
+<template name="Addenda SuperPrecio" t-name="add.addenda_superprecio01">
+  <Addenda>
+    <Documento>
+      <tipoComprobante>FE</tipoComprobante>
+      <plazoPago t-field="record.field_sales.payment_term_id" />
+      <t t-if="record.field_sales.note == ''">
+        <observaciones>NINGUNA</observaciones>
+      </t>
+      <t t-else="">
+        <observaciones t-field="record.field_sales.note" />
+      </t>
+      <Detalle>
+        <folio t-field="record.reference" />
+        <t t-foreach="record.field_sales.order_line" t-as="rec">
+          <Producto>
+            <codigoBarras t-esc="rec.product_id.barcode" />
+            <cajasEntregadas t-esc="rec.product_uom_qty" />
+            <precioUnitarioCaja t-esc="rec.price_unit" />
+            <t t-set="piez_ent" t-value="rec.product_id.uom_id.factor * rec.product_uom_qty" />
+            <piezasEntregadas t-esc="piez_ent" />
+            <t t-set="oper1" t-value="rec.price_unit * rec.product_uom_qty" />
+            <t t-set="oper2" t-value="oper1 / piez_ent" />
+            <precioUnitarioPieza t-esc="oper2" />
+            <Impuestos>
+              <t t-set="cont" t-value="0" />
+              <t t-foreach="rec.tax_id"  t-as="tc">
+                <t t-foreach="tc.tag_ids" t-as="tg">
+                  <t t-set="resultimp" t-value="rec.price_unit" />
+                  <t t-set="resoperimp" t-value="resultimp * (tc.amount / 100)"  />
+                  <t t-set="cont" t-value="cont + resoperimp"  />
+                </t>
+              </t>
+              <totalImouestosTrasladados t-esc="cont" />
+              <Traslados>
+                <t t-foreach="rec.tax_id" t-as="tac">
+                  <t t-foreach="tac.tag_ids" t-as="tag">
+                    <t t-set="resultimpuest" t-value="rec.price_unit" />
+                    <Traslado>
+                      <impuesto t-esc="tag.name" />
+                      <tasa t-esc="tac.amount" />
+                      <importe t-esc="resultimpuest * (tac.amount / 100)" />
+                    </Traslado>
+                  </t>
+                </t>
+              </Traslados>
+            </Impuestos>
+          </Producto>
+        </t>
+        <fechaEntregaRequerida t-field="record.field_sales.date_of_deli" />
+        <numeroOrden t-field="record.field_sales.number_order" />
+        <fechaPedidoCliente t-field="record.date_invoice" />
+        <camppAddic t-field="record.field_sales.field_add_capture" />
+      </Detalle>
+      <!--<fechaEntregaRequerida t-field="record.field_sales.date_of_deli" />
+      <numeroOrden t-field="record.field_sales.number_order" />
+      <fechaPedidoCliente t-field="record.date_invoice" />
+      <camppAddic t-field="record.field_sales.field_add_capture" /> -->
+    </Documento>
+  </Addenda>
+</template>
