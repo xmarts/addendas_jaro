@@ -670,7 +670,7 @@
 <template name="Chedraui" t-name="add.chedraui">
   <EDCINVOICE>
     <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
-    <t t-set="h1c" t-value="[H1]" />
+    <!-- Datos del XML generado al timbrar -->
     <t t-set="serie" t-value="xml.get('Serie')" />
     <t t-set="folio" t-value="xml.get('Folio')" />
     <t t-set="fecha" t-value="xml.get('Fecha')" />
@@ -680,9 +680,10 @@
     <t t-set="metpa" t-value="xml.get('MetodoPago')" />
     <testeo t-esc="h1c" />
     <tmp t-esc="'[H1]'+'|'+serie+'|'+folio+'|'+fecha" />
-    <serie t-esc="serie" />
+    <serie t-esc="serie" /> 2
     <folio t-esc="folio" />
     <fecha t-esc="fecha" />
+    <!-- Datos de la empresa -->
     <t t-set="street" t-value="record.company_id.street_name" />
     <t t-set="reference" t-value="record.company_id.street2" />
     <t t-set="numext" t-value="record.company_id.street_number" />
@@ -693,7 +694,33 @@
     <t t-set="state" t-value="record.company_id.state_id.name" />
     <t t-set="country" t-value="record.company_id.country_id.name" />
     <t t-set="codpost" t-value="record.company_id.zip" />
-    <tagH3 t-esc="'[H3]'+'|'+street+'|'+numext+'|'+numint+'|'+colony+'|'+locality+'|'+city+'|'+state+'|'+country+'|'+codpost " />
+    <tagH3 t-esc="'[H3]'+'|'+nameem+'|'+street+'|'+numext+'|'+numint+'|'+colony+'|'+locality+'|'+city+'|'+state+'|'+country+'|'+codpost+'|' " />
+    <!-- Datos del cliente -->
+    <t t-set="namecli" t-value="record.partner_id.name" />
+    <t t-set="streetcli" t-value="record.partner_id.street_name" />
+    <t t-set="referencecli" t-value="record.partner_id.street2" />
+    <t t-set="numextcli" t-value="record.partner_id.street_number" />
+    <t t-set="numintcli" t-value="record.partner_id.street_number2" />
+    <t t-set="colonycli" t-value="record.partner_id.l10n_mx_edi_colony" />
+    <t t-set="localitycli" t-value="record.partner_id.l10n_mx_edi_locality" />
+    <t t-set="citycli" t-value="record.partner_id.city" />
+    <t t-set="statecli" t-value="record.partner_id.state_id.name" />
+    <t t-set="countrycli" t-value="record.partner_id.country_id.name" />
+    <t t-set="codpostcli" t-value="record.partner_id.zip" />
+    <tagH4 t-esc="'[H4]'+'|'+namecli+'|'+streetcli+'|'+numextcli+'|'+numintcli+'|'+colonycli+'|'+localitycli+'|'+citycli+'|'+statecli+'|'+countrycli+'|'+codpostcli+'|' " />
+    <!-- Datos del lugar a entregar -->
+    <t t-set="nameent" t-value="record.partner_shipping_id.name" />
+    <t t-set="streetent" t-value="record.partner_shipping_id.street_name" />
+    <t t-set="numextent" t-value="record.partner_shipping_id.street_number" />
+    <t t-set="numintent" t-value="record.partner_shipping_id.street_number2" />
+    <t t-set="colonyent" t-value="record.partner_shipping_id.l10n_mx_edi_colony" />
+    <t t-set="localityent" t-value="record.partner_shipping_id.l10n_mx_edi_locality" />
+    <t t-set="cityent" t-value="record.partner_shipping_id.city" />
+    <t t-set="stateent" t-value="record.partner_shipping_id.state_id.name" />
+    <t t-set="countryent" t-value="record.partner_shipping_id.country_id.name" />
+    <t t-set="codpostent" t-value="record.partner_shipping_id.zip" />
+    <tagH5 t-esc="'[H5]'+'|'+nameent+'|'+streetent+'|'+numextent+'|'+numintent+'|'+colonyent+'|'+'localityent'+'|'+cityent+'|'+stateent+'|'+countryent+'|'+'codpostent+'|' " />
+    
   </EDCINVOICE>
 </template>
 
