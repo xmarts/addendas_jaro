@@ -709,6 +709,8 @@
     <t t-set="codpostcli" t-value="record.partner_id.zip" />
     <tagH4 t-esc="'[H4]'+'|'+namecli+'|'+streetcli+'|'+numextcli+'|'+numintcli+'|'+colonycli+'|'+localitycli+'|'+citycli+'|'+statecli+'|'+countrycli+'|'+codpostcli+'|' " />
     <!-- Datos del lugar a entregar -->
+    <t t-set="phoneent" t-value="record.partner_shipping_id.phone" />
+    <t t-set="emailent" t-value="record.partner_shipping_id.email" />
     <t t-set="nameent" t-value="record.partner_shipping_id.name" />
     <t t-set="streetent" t-value="record.partner_shipping_id.street_name" />
     <t t-set="numextent" t-value="record.partner_shipping_id.street_number" />
@@ -719,8 +721,8 @@
     <t t-set="stateent" t-value="record.partner_shipping_id.state_id.name" />
     <t t-set="countryent" t-value="record.partner_shipping_id.country_id.name" />
     <t t-set="codpostent" t-value="record.partner_shipping_id.zip" />
-    <tagH5 t-esc="'[H5]'+'|'+nameent+'|'+streetent+'|'+numextent+'|'+numintent+'|'+colonyent+'|'+'localityent'+'|'+cityent+'|'+stateent+'|'+countryent+'|'+'codpostent+'|' " />
-    
+    <tagH5 t-esc="'[H5]'+'|'+nameent+'|'+streetent+'|'+numextent+'|'+numintent+'|'+colonyent+'|'+localityent+'|'+cityent+'|'+stateent+'|'+countryent+'|'+codpostent+'|' " />
+
   </EDCINVOICE>
 </template>
 
