@@ -674,13 +674,13 @@
     <t t-set="serie" t-value="xml.get('Serie')" />
     <t t-set="folio" t-value="xml.get('Folio')" />
     <t t-set="fecha" t-value="xml.get('Fecha')" />
-    <t t-set="namem" t-value="xml.Emisor.get('Nombre')" />
+    <t t-set="nameem" t-value="xml.Emisor.get('Nombre')" />
     <t t-set="rfcem" t-value="xml.Emisor.get('Rfc')" />
     <t t-set="lugex" t-value="xml.Emisor.get('LugarExpedicion')" />
     <t t-set="metpa" t-value="xml.get('MetodoPago')" />
     <testeo t-esc="h1c" />
     <tmp t-esc="'[H1]'+'|'+serie+'|'+folio+'|'+fecha" />
-    <serie t-esc="serie" /> 2
+    <serie t-esc="serie" />
     <folio t-esc="folio" />
     <fecha t-esc="fecha" />
     <!-- Datos de la empresa -->
@@ -725,6 +725,110 @@
 
   </EDCINVOICE>
 </template>
+
+
+
+<?xml version="1.0"?>
+<template name="Chedraui" t-name="add.chedraui">
+    <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
+
+    <t t-set="versi" t-value="xml.get('Version')" />
+    <t t-set="serie" t-value="xml.get('Serie')" />
+    <t t-set="folio" t-value="xml.get('Folio')" />
+    <t t-set="fecha" t-value="xml.get('Fecha')" />
+    <t t-set="nocer" t-value="xml.get('NoCertificado')" />
+    <t t-set="metpa" t-value="xml.get('MetodoPago')" />
+    <t t-set="formp" t-value="xml.get('FormaPago')" />
+    <t t-set="condp" t-value="xml.get('CondicionesDePago')" />
+    <t t-set="subto" t-value="xml.get('SubTotal')" />
+    <t t-set="moned" t-value="xml.get('Moneda')" />
+    <!-- <t t-set="tipca" t-value="xml.get('TipoCambio')" /> -->
+    <t t-set="total" t-value="xml.get('Total')" />
+    <t t-set="tipoc" t-value="xml.get('TipoDeComprobante')" />
+    <t t-set="lugex" t-value="xml.get('LugarExpedicion')" />
+
+    <!-- Datos emisor -->
+    <t t-set="nameem" t-value="xml.Emisor.get('Nombre')" />
+    <t t-set="rfcem" t-value="xml.Emisor.get('Rfc')" />
+    <t t-set="regfi" t-value="xml.Emisor.get('RegimenFiscal')" />
+
+    <!-- Datos receptor -->
+    <t t-set="rfcrec" t-value="xml.Receptor.get('Rfc')" />
+    <t t-set="namrec" t-value="xml.Receptor.get('Nombre')" />
+    <t t-set="usocfd" t-value="xml.Receptor.get('UsoCFDI')" />
+
+    <!-- Datos del H2 -->
+    <t t-set="taghcero" t-value="'[H0]'+'|'+rfcrec+'|'+nocer+'|'+' '" />
+
+    <!-- Datos del H1 -->
+    <t t-set="taghpri" t-value="'[H1]'+'|'+serie+'|'+folio+'|'+fecha+'|'+' '" />
+
+    <!-- Datos de la empresa -->
+    <t t-set="street" t-value="record.company_id.street_name" />
+    <!-- <t t-set="reference" t-value="record.company_id.street2" /> -->
+    <t t-set="numext" t-value="record.company_id.street_number" />
+    <t t-set="numint" t-value="record.company_id.street_number2" />
+    <t t-set="colony" t-value="record.company_id.l10n_mx_edi_colony" />
+    <t t-set="locality" t-value="record.company_id.l10n_mx_edi_locality" />
+    <t t-set="city" t-value="record.company_id.city" />
+    <t t-set="state" t-value="record.company_id.state_id.name" />
+    <t t-set="country" t-value="record.company_id.country_id.name" />
+    <t t-set="codpost" t-value="record.company_id.zip" />
+    <t t-set="taghdos" t-value="'[H3]'+'|'+nameem+'|'+street+'|'+numext+'|'+numint+'|'+colony+'|'+locality+'|'+city+'|'+state+
+    '|'+country+'|'+codpost+'|'+' '" />
+
+    <!-- Datos del cliente -->
+    <t t-set="namecli" t-value="record.partner_id.name" />
+    <t t-set="streetcli" t-value="record.partner_id.street_name" />
+    <t t-set="referencecli" t-value="record.partner_id.street2" />
+    <t t-set="numextcli" t-value="record.partner_id.street_number" />
+    <t t-set="numintcli" t-value="record.partner_id.street_number2" />
+    <t t-set="colonycli" t-value="record.partner_id.l10n_mx_edi_colony" />
+    <t t-set="localitycli" t-value="record.partner_id.l10n_mx_edi_locality" />
+    <t t-set="citycli" t-value="record.partner_id.city" />
+    <t t-set="statecli" t-value="record.partner_id.state_id.name" />
+    <t t-set="countrycli" t-value="record.partner_id.country_id.name" />
+    <t t-set="codpostcli" t-value="record.partner_id.zip" />
+    <t t-set="taghtres" t-value="'[H4]'+'|'+namecli+'|'+streetcli+'|'+numextcli+'|'+numintcli+'|'+colonycli+'|'+localitycli+'|'+citycli+'|'+statecli+'|'
+    +countrycli+'|'+codpostcli+'|'+' '" />
+
+    <!-- Datos del lugar a entregar -->
+    <t t-set="phoneent" t-value="record.partner_shipping_id.phone" />
+    <t t-set="emailent" t-value="record.partner_shipping_id.email" />
+    <t t-set="nameent" t-value="record.partner_shipping_id.name" />
+    <t t-set="streetent" t-value="record.partner_shipping_id.street_name" />
+    <t t-set="numextent" t-value="record.partner_shipping_id.street_number" />
+    <t t-set="numintent" t-value="record.partner_shipping_id.street_number2" />
+    <t t-set="colonyent" t-value="record.partner_shipping_id.l10n_mx_edi_colony" />
+    <t t-set="localityent" t-value="record.partner_shipping_id.l10n_mx_edi_locality" />
+    <t t-set="cityent" t-value="record.partner_shipping_id.city" />
+    <t t-set="stateent" t-value="record.partner_shipping_id.state_id.name" />
+    <t t-set="countryent" t-value="record.partner_shipping_id.country_id.name" />
+    <t t-set="codpostent" t-value="record.partner_shipping_id.zip" />
+    <t t-set="taghcinco" t-value="'[H5]'+'|'+nameent+'|'+streetent+'|'+numextent+'|'+numintent+'|'+colonyent+'|'
+    +localityent+'|'+cityent+'|'+stateent+'|'+countryent+'|'+codpostent+'|'+' '" />
+    
+    <t t-set="tagprod" t-value="''.join(map(lambda x: ('[D]'+x.product_id.l10n_mx_edi_code_sat_id.code+'|'+x.product_id.barcode+'|'+x.product_id.name+'|'+str(x.product_uom_qty)+'|'+x.product_uom.name+'|'+str(x.price_unit)+'|'), record.fields_sales.order_line))"/>
+
+    <t t-set="tagpen" t-value="'[CO]'+'|'+versi+'|'+serie+'|'+folio+'|'+fecha+'|'+formp+'|'+nocer+'|'+condp+'|'+subto+'|'
+    +moned+'|'+total+'|'+tipoc+'|'+metpa+'|'+lugex+'|'+rfcem+'|'+nameem+'|'+regfi+'|'+rfcrec+'|'+namrec+'|'+usocfd+'|' " />
+    
+    <t t-set="valorconcept" t-value="''.join(map(lambda x: (x.get('ClaveProdServ')+'|'+x.get('NoIdentificacion')+'|'+x.get('Cantidad')+'|'+x.get('ClaveUnidad')+'|'+x.get('Unidad')+'|'+x.get('Descripcion')+'|'+x.get('ValorUnitario')+'|'+x.get('Importe')+'|'+''.join(map(lambda i:(i.get('Base')+'|'+i.get('Impuesto')+'|'+i.get('TipoFactor')+'|'+i.get('TasaOCuota')+'|'+i.get('Importe')+'|'), x.Impuestos.Traslados.Traslado))), xml.Conceptos.Concepto))"/>
+
+    <t t-set="tagfinal" t-value="taghcero+taghpri+taghdos+taghtres+taghcinco+tagprod+tagpen+valorconcept"/>
+
+    <EDCINOVICE t-esc="tagfinal" />
+
+    
+    
+</template>
+
+
+
+
+
+
+
 
 
 
