@@ -823,12 +823,67 @@
     
 </template>
 
-
-
-
-
-
-
-
-
-
+<?xml version="1.0"?>
+<template name="Walmart" t-name="add.walmart">
+  <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
+  <t t-set="sdato" t-value="'FaltaDato'" />
+  <t t-set="lin" t-value="'|'" />
+  
+  <!-- Datos de la etiqueta H0 -->
+  <t t-set="rfcrec" t-value="xml.Receptor.get('Rfc')" />
+  <t t-set="nocer" t-value="xml.get('NoCertificado')" />
+  <t t-set="taghcero" t-value="'[H0]'+'|'+rfcrec+'|'+sdato+'|'+sdato+'|'+nocer+'|'+sdato+'|'+sdato+'|'+'|'+'|'"/>
+  
+  <!-- Datos de la etiqueta H1 -->
+  <t t-set="serie" t-value="xml.get('Serie')" />
+  <t t-set="folio" t-value="xml.get('Folio')" />
+  <t t-set="fecha" t-value="xml.get('Fecha')" />
+  <t t-set="formp" t-value="record.l10n_mx_edi_payment_method_id.name" />
+  <t t-set="condp" t-value="record.fields_sales.payment_term_id.name" />
+  <t t-set="fundo" t-value="'O'" />
+  <t t-set="tipdo" t-value="'FACTURA COMERCIAL'" />
+  <t t-set="numpr" t-value="record.partner_id.number_provideer" />
+  <t t-set="tsiva" t-value="'16'" />
+  <t t-set="numti" t-value="record.partner_id.number_store" />
+  <t t-set="moned" t-value="record.currency_id.name" />
+  <t t-set="fenac" t-value="record.fields_sales.date_of_deli" />
+  <t t-set="fenacc" t-value="'TEXTO DE PRUEBA'" />
+  <t t-set="totex" t-value="record.amount_to_text" />
+  <t t-set="ilcfd" t-value="'D00'" />
+  <t t-set="taghuno" t-value="'[H1]'+lin+serie+lin+folio+lin+sdato+lin+fecha+lin+sdato+lin+sdato+lin+formp+lin+condp+lin+fundo+
+  lin+tipdo+lin+lin+lin+lin+lin+lin+lin+lin+lin+sdato+lin+sdato+lin+sdato+lin+lin+numpr+lin+tsiva+numti+lin+sdato+lin+sdato+lin+
+  sdato+lin+sdato+lin+moned+lin+sdato+lin+str(fenac)+lin+sdato+lin+lin+lin+lin+sdato+lin+sdato+lin+lin+lin+lin+totex+lin+ilcfd+lin+
+  sdato+lin+sdato+lin+sdato+lin+sdato+lin+sdato+lin" />
+  
+  <!-- Datos de la etiqueta H2 -->
+  <t t-set="namem" t-value="xml.Emisor.get('Nombre')" />
+  <t t-set="rfcem" t-value="xml.Emisor.get('Rfc')" />
+  <t t-set="glnem" t-value="record.partner_id.gln" />
+  <t t-set="street" t-value="record.company_id.street_name" />
+  <t t-set="reference" t-value="record.company_id.street2" />
+  <t t-set="numext" t-value="record.company_id.street_number" />
+  <t t-set="numint" t-value="record.company_id.street_number2" />
+  <t t-set="colony" t-value="record.company_id.l10n_mx_edi_colony" />
+  <t t-set="locality" t-value="record.company_id.l10n_mx_edi_locality" />
+  <t t-set="city" t-value="record.company_id.city" />
+  <t t-set="state" t-value="record.company_id.state_id.name" />
+  <t t-set="country" t-value="record.company_id.country_id.name" />
+  <t t-set="codpost" t-value="record.company_id.zip" />
+  <t t-set="phoneem" t-value="record.company_id.phone" />
+  <t t-set="emailem" t-value="record.company_id.email" />
+  <t t-set="taghdos" t-value="'[H2]'+lin+namem+lin+rfcem+lin+str(glnem)+lin+street+lin+str(numext)+lin+str(numint)+
+  lin+colony+lin+locality+lin+lin+city+lin+state+lin+country+lin+codpost+lin+sdato+lin+str(phoneem)+lin+sdato+lin+sdato+lin+
+  emailem+lin+sdato+lin+sdato+lin+sdato+lin+sdato+lin+sdato+lin+sdato+lin+sdato+lin" />
+  
+  <!-- Creación de la etiqueta H3 esta contiene los mismos datos que la etiqueta H2 -->
+  <t t-set="taghtres" t-value="'[H3]'+lin+namem+lin+rfcem+lin+str(glnem)+lin+street+lin+str(numext)+lin+str(numint)+
+  lin+colony+lin+locality+lin+lin+city+lin+state+lin+country+lin+codpost+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin" />
+  
+  <!-- Datos de la etiqueta H4 -->
+  <t t-set="namre" t-value="xml.Receptor.get('Nombre')" />
+  <t t-set="rfcre" t-value="xml.Receptor.get('Rfc')" />
+  <t t-set="taghcuatro" t-value="'[H4]'+lin+namre+lin+rfcre+lin+sdato+lin+" />
+  
+  <t t-set="tagfinal" t-value="taghcero+taghuno+taghdos+taghtres" />
+  <EDCINVOICE t-esc="tagfinal" />
+</template>
