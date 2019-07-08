@@ -847,6 +847,9 @@
   <t t-set="numti" t-value="record.partner_id.number_store" />
   <t t-set="moned" t-value="record.currency_id.name" />
   <t t-set="fenac" t-value="record.fields_sales.date_of_deli" />
+  <t t-if="fenac == False" >
+    <t t-set="fenac" t-value="''" />
+  </t>
   <t t-set="fenacc" t-value="'TEXTO DE PRUEBA'" />
   <t t-set="totex" t-value="record.amount_to_text" />
   <t t-set="ilcfd" t-value="'D00'" />
@@ -880,10 +883,30 @@
   lin+colony+lin+locality+lin+lin+city+lin+state+lin+country+lin+codpost+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin" />
   
   <!-- Datos de la etiqueta H4 -->
-  <t t-set="namre" t-value="xml.Receptor.get('Nombre')" />
-  <t t-set="rfcre" t-value="xml.Receptor.get('Rfc')" />
-  <t t-set="taghcuatro" t-value="'[H4]'+lin+namre+lin+rfcre+lin+sdato+lin+" />
+  <t t-set="namrec" t-value="xml.Receptor.get('Nombre')" />
+  <t t-set="rfcrec" t-value="xml.Receptor.get('Rfc')" />
+  <t t-set="streetrec" t-value="record.partner_id.street_name" />
+  <t t-set="numextrec" t-value="record.partner_id.street_number" />
+  <t t-set="numintrec" t-value="record.partner_id.street_number2" />
+  <t t-set="colonyrec" t-value="record.partner_id.l10n_mx_edi_colony " />
+  <t t-set="localityrec" t-value="record.partner_id.l10n_mx_edi_locality" />
+  <t t-set="cityrec" t-value="record.partner_id.city" />
+  <t t-set="staterec" t-value="record.partner_id.state_id.name" />
+  <t t-set="countryrec" t-value="record.partner_id.country_id.name" />
+  <t t-set="codpostrec" t-value="record.partner_id.zip" />
+  <t t-set="phonerec" t-value="record.partner_id.phone" />
+  <t t-if="phonerec == False">
+    <t t-set="phonerec" t-value="''" />
+  </t>
+  <t t-set="emailrec" t-value="record.partner_id.email" />
+  <t t-if="emailrec == False" >
+    <t t-set="emailrec" t-value="''" />
+  </t>
+  <t t-set="taghcuatro" t-value="'[H4]'+lin+namrec+lin+rfcrec+lin+sdato+lin+streetrec+lin+str(numextrec)+
+  lin+str(numintrec)+lin+colonyrec+lin+localityrec+lin+cityrec+lin+staterec+lin+countryrec+lin+codpostrec+lin+str(phonerec)+
+  lin+lin+sdato+lin+sdato+lin+str(emailrec)+lin+lin+lin+lin+lin+lin+lin+lin+lin" />
   
-  <t t-set="tagfinal" t-value="taghcero+taghuno+taghdos+taghtres" />
+  <t t-set="tagfinal" t-value="taghcero+taghuno+taghdos+taghtres+taghcuatro" />
   <EDCINVOICE t-esc="tagfinal" />
+  
 </template>
