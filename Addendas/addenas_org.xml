@@ -939,9 +939,26 @@
   <t t-set="serie" t-value="xml.get('Serie')" />
   <t t-set="folio" t-value="xml.get('Folio')" />
   <t t-set="fecha" t-value="xml.get('Fecha')" />
-  <t t-set="formp" t-value="record.l10n_mx_edi_payment_method_id.name" />
+  <t t-set="formp" t-value="xml.get('FormaPago')" />
   <t t-set="condp" t-value="record.fields_sales.payment_term_id.name" />
   <t t-set="fundo" t-value="'O'" />
+  <t t-set="tipcomp" t-value="xml.get('TipoDeComprobante')" />
+  <t t-set="descuento" t-value="xml.get('Descuento')" />
+  
+  <t t-if="descuento == None" >
+    <t t-set="descuento" t-value="''" />
+  </t>
+  
+  <t t-set="metpag" t-value="xml.get('MetodoPago')" />
+  
+  <t t-if="metpag == PPD" >
+    <t t-set="metpag" t-value="'PPD-Pago en parcialidades o diferido'" />
+  </t>
+  <t t-else="" >
+    <t t-set="metpag" t-value="'PUE-Pago en una sola exhibicion'" />
+  </t>
+  
+  <t t-set="lugexped" t-value="xml.get('LugarExpedicion')" />
   <t t-set="tipdo" t-value="'FACTURA COMERCIAL'" />
   <t t-set="numpr" t-value="record.partner_id.number_provideer" />
   <t t-set="tsiva" t-value="'16'" />
@@ -954,9 +971,9 @@
   <t t-set="fenacc" t-value="'TEXTO DE PRUEBA'" />
   <t t-set="totex" t-value="record.amount_to_text" />
   <t t-set="ilcfd" t-value="'D00'" />
-  <t t-set="taghuno" t-value="'[H1]'+lin+serie+lin+folio+lin+sdato+lin+fecha+lin+sdato+lin+sdato+lin+formp+lin+condp+lin+fundo+
-  lin+tipdo+lin+lin+lin+lin+lin+lin+lin+lin+lin+sdato+lin+sdato+lin+sdato+lin+lin+numpr+lin+tsiva+numti+lin+sdato+lin+sdato+lin+
-  sdato+lin+sdato+lin+moned+lin+sdato+lin+str(fenac)+lin+sdato+lin+lin+lin+lin+sdato+lin+sdato+lin+lin+lin+lin+totex+lin+ilcfd+lin+
+  <t t-set="taghuno" t-value="'[H1]'+lin+serie+lin+folio+lin+sdato+lin+fecha+lin+sdato+lin+sdato+lin+str(formp)+lin+condp+lin+fundo+
+  lin+str(tipcomp)+lin+lin+lin+str(descuento)+lin+lin+lin+lin+lin+lin+lin+sdato+lin+sdato+lin+sdato+lin+lin+numpr+lin+tsiva+numti+
+  lin+sdato+lin+sdato+lin+str(lugexped)+lin+metpag+lin+moned+lin+sdato+lin+str(fenac)+lin+sdato+lin+lin+lin+lin+sdato+lin+sdato+lin+lin+lin+lin+totex+lin+ilcfd+lin+
   sdato+lin+sdato+lin+sdato+lin+sdato+lin+sdato+lin" />
   
   <!-- Datos de la etiqueta H2 -->
@@ -973,10 +990,11 @@
   <t t-set="state" t-value="record.company_id.state_id.name" />
   <t t-set="country" t-value="record.company_id.country_id.name" />
   <t t-set="codpost" t-value="record.company_id.zip" />
+  <t t-set="regfiscal" t-value="xml.Emisor.get('RegimenFiscal')" />
   <t t-set="phoneem" t-value="record.company_id.phone" />
   <t t-set="emailem" t-value="record.company_id.email" />
   <t t-set="taghdos" t-value="'[H2]'+lin+namem+lin+rfcem+lin+str(glnem)+lin+street+lin+str(numext)+lin+str(numint)+
-  lin+colony+lin+locality+lin+lin+city+lin+state+lin+country+lin+codpost+lin+sdato+lin+str(phoneem)+lin+sdato+lin+sdato+lin+
+  lin+colony+lin+locality+lin+lin+city+lin+state+lin+country+lin+codpost+lin+str(regfiscal)+lin+str(phoneem)+lin+sdato+lin+sdato+lin+
   emailem+lin+sdato+lin+sdato+lin+sdato+lin+sdato+lin+sdato+lin+sdato+lin+sdato+lin" />
   
   <!-- Creación de la etiqueta H3 esta contiene los mismos datos que la etiqueta H2 -->
@@ -1030,11 +1048,11 @@
   <!-- Datos de la etiqueta D -->
   
   <t t-set="tagdatad" t-value="''.join(map(lambda x: ('[D]'+lin+x.product_id.l10n_mx_edi_code_sat_id.code+lin+lin+
-  x.product_id.name+lin+lin+str(x.product_uom_qty)+lin+x.product_uom.name+lin+str(x.price_unit)+lin+sdato+lin+
-  sdato+lin+sdato+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+str(x.price_subtotal)+lin+''.join(map(lambda t: 
-  (str(int(t.amount))+lin+str(0)+lin), x.tax_id))+str(int(x.product_uom_qty))+lin+lin+lin+lin+sdato+lin+sdato+lin+lin+lin+
-  lin+str(x.price_subtotal)+lin+str(x.price_subtotal)+lin+str(x.price_tax)+lin+str(0)+lin+sdato+lin+sdato+lin+lin+lin+lin+
-  lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin),record.fields_sales.order_line))" />
+  x.product_id.name+lin+lin+str(x.product_uom_qty)+lin+x.product_uom.name+lin+str(x.price_unit)+lin+sdato+lin+sdato+
+  lin+sdato+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+str(x.price_subtotal)+lin+''.join(map(lambda t: 
+  (str(int(t.amount))+lin+str(0)+lin), x.tax_id))+str(int(x.product_uom_qty))+lin+lin+lin+lin+sdato+lin+
+  str(x.product_id.default_code)+lin+lin+lin+lin+str(x.price_subtotal)+lin+str(x.price_subtotal)+lin+str(x.price_tax)+
+  lin+str(0)+lin+sdato+lin+sdato+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin+lin),record.fields_sales.order_line))" />
   <!-- Falta confirmacion de dato -->
   <t t-set="ordercomp" t-value="record.fields_sales.number_order" />
   <t t-if="ordercomp == False">
@@ -1083,16 +1101,39 @@
   <t t-set="verco" t-value="xml.get('Version')" />
   <t t-set="metpagco" t-value="xml.get('MetodoPago')" />
   <t t-set="metpagformat" t-value="'MetodoPago'" />
-  <!--<t t-if="metpagco == 'PPD'" >
-    <t t-set="metpagformat" t-value="metpagco+Pago en parcialidades o diferido" />
-  </t>-->
+  <t t-if="metpagco == PPD" >
+    <t t-set="metpagformat" t-value="'PPD-Pago en parcialidades o diferido'" />
+  </t>
+  <t t-else="">
+    <t t-set="metpagformat" t-value="'PUE-Pago en una sola exhibicion'" />
+  </t>
+  <testeopr t-esc="metpagformat" />
   <t t-set="condpagco" t-value="record.fields_sales.payment_term_id.name" />
   <!-- El valor tipo de cambio con valor 1 no existe en el xml que genera odoo -->
   <t t-set="formpagco" t-value="xml.get('FormaPago')" />
-  <t t-set="tagco" t-value="'[CO]'+lin+sdato+lin+sdato+lin+verco+lin+sdato+lin+sdato+lin+metpagco+lin+condpagco+lin+
-  str(subts)+lin+lin+sdato+lin+str(totpa)+lin+str(formpagco)+lin" />
+  <t t-set="cityco" t-value="record.company_id.city" />
+  <t t-set="stateco" t-value="record.company_id.state_id.name" />
+  <t t-set="zipco" t-value="record.company_id.zip" />
+  <t t-set="rfcco" t-value="xml.Emisor.get('Rfc')" />
+  <t t-set="namco" t-value="xml.Emisor.get('Nombre')" />
+  <t t-set="streetco" t-value="record.company_id.street_name" />
+  <t t-set="numextco" t-value="record.company_id.street_number" />
+  <t t-set="colonyco" t-value="record.company_id.l10n_mx_edi_colony" />
+  <t t-set="countryco" t-value="record.company_id.country_id.name" />
+  <t t-set="lugexpedco" t-value="xml.get('LugarExpedicion')" />
+  <t t-set="impstrasla" t-value="xml.Impuestos.get('TotalImpuestosTrasladados')" />
+  <t t-set="tagco" t-value="'[CO]'+lin+sdato+lin+sdato+lin+verco+lin+sdato+lin+sdato+lin+metpagformat+lin+condpagco+lin+
+  str(subts)+lin+lin+sdato+lin+str(totpa)+lin+str(formpagco)+lin+cityco+', '+stateco+lin+str(zipco)+lin+rfcco+lin+namco+
+  lin+''.join(map(lambda x: (streetco+lin+str(numextco)+lin+colonyco+lin+cityco+lin+stateco+lin+countryco+lin+str(lugexpedco)+
+  lin),record.fields_sales.order_line))+''.join(map(lambda t: (str(t.product_uom_qty)+lin+t.product_uom.name+lin+
+  str(t.product_id.barcode)+lin+t.product_id.name+lin+str(t.price_unit)+lin+str(t.price_subtotal)+lin),
+  record.fields_sales.order_line))+'IVA'+lin+str(16.00)+lin+str(impstrasla)+lin+str(impstrasla)+lin+lin" />
+  
+  <t t-set="tagse" t-value="' '+'[SE]'+lin" />
 
-  <t t-set="tagfinal" t-value="taghcero+taghuno+taghdos+taghtres+taghcuatro+taghcinco+tagd+tags+tagco" />
+  <t t-set="tagfinal" t-value="taghcero+taghuno+taghdos+taghtres+taghcuatro+taghcinco+tagd+tags+tagco+tagse" />
   <EDCINVOICE t-esc="tagfinal" />
   
 </template>
+
+''.join(map(lambda t: (str(int(t.amount))+lin+str(0)+lin), x.tax_id)
