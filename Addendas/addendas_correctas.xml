@@ -1,6 +1,5 @@
 <!-- ADDENDA FARMACIA GUADALAJARA -->
 
-<?xml version="1.0"?>
 <template name="Farmacia Guadalajara" t-name="add.addenda_farmaciaG01">
   <requestForPayment type="SimpleInvoiceType" contentVersion="1.3.1" documentStructureVersion="AMC006" documentStatus="ORIGINAL">
     <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()"/>
@@ -12,7 +11,7 @@
       <uniqueCreatorIdentification t-esc="serie+folio" />
     </requestForPaymentIdentification>
     <orderIdentification>
-      <referenceIdentification type="ON" t-field="record.field_sales.number_order" />
+      <referenceIdentification type="ON" t-field="record.fields_sales.number_order" />
     </orderIdentification>
     <buyer>
       <gln t-field="record.partner_id.gln" />
@@ -32,7 +31,7 @@
       <rateOfChange>1</rateOfChange>
     </currency>
     <t t-set="cont" t-value="0" />
-    <t t-foreach="record.field_sales.order_line" t-as="rec" >
+    <t t-foreach="record.fields_sales.order_line" t-as="rec" >
       <t t-set="cont" t-value="cont + 1" />
       <lineItem>
         <type>SimpleInvoiceLineItemType</type>
@@ -117,7 +116,7 @@
     </TotalAllowanceCharge>
     <baseAmount>
       <t t-set="valamount" t-value="0" />
-      <t t-foreach="record.field_sales.order_line" t-as="rec">
+      <t t-foreach="record.fields_sales.order_line" t-as="rec">
         <t t-foreach="rec.tax_id" t-as="tac">
           <t t-foreach="tac.tag_ids" t-as="tag">
             <t t-if="record.partner_id.most_ieps == False">
@@ -144,7 +143,7 @@
     </baseAmount>
     <payableAmount>
       <t t-set="valpay" t-value="0" />
-      <t t-foreach="record.field_sales.order_line" t-as="rec">
+      <t t-foreach="record.fields_sales.order_line" t-as="rec">
         <t t-set="valpay" t-value="valpay + rec.price_subtotal" />
       </t>
       <Amount t-esc="valpay" />
@@ -152,104 +151,10 @@
   </requestForPayment>
 </template>
 
-<!-- ADDENDA 7 / 24 -->
+<!-- PROVEEDORA DEL PANADERO -->
 
 <?xml version="1.0"?>
-<template name="7/24" t-name="add.addenda_7/24_01">
-  <Referencia724>
-    <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
-    <t t-set="rfc" t-value="xml.Emisor.get('Rfc')" />
-    <t t-set="serie" t-value="xml.get('Serie')" />
-    <t t-set="folio" t-value="xml.get('Folio')" />
-    <t t-set="suc" t-value="record.partner_id.type_suc" />
-    <t t-set="num" t-value="record.partner_id.number_sucursal" />
-    <referencia t-esc="rfc+','+suc+num+','+serie+folio" />
-    <fechaDeEntrega t-field="record.field_sales.date_of_deli" t-options='{"format": "yyyy/MM/dd"}' />
-    <numeroOrden t-field="record.field_sales.number_order" />
-  </Referencia724>
-</template>
-
-<!-- ADDENDA SUPER PRECIO -->
-
-<?xml version="1.0"?>
-<template name="SuperPrecio" t-name="add.addenda_superprecio01">
-    <Documento>
-      <tipoComprobante>FE</tipoComprobante>
-      <plazoPago t-field="record.field_sales.payment_term_id" />
-      <t t-if="record.field_sales.note == ''">
-        <observaciones>NINGUNA</observaciones>
-      </t>
-      <t t-else="">
-        <observaciones t-field="record.field_sales.note" />
-      </t>
-      <Detalle>
-        <folio t-field="record.reference" />
-        <t t-foreach="record.field_sales.order_line" t-as="rec">
-          <Producto>
-            <codigoBarras t-esc="rec.product_id.barcode" />
-            <cajasEntregadas t-esc="rec.product_uom_qty" />
-            <precioUnitarioCaja t-esc="rec.price_unit" />
-            <t t-set="piez_ent" t-value="rec.product_id.uom_id.factor * rec.product_uom_qty" />
-            <piezasEntregadas t-esc="piez_ent" />
-            <t t-set="oper1" t-value="rec.price_unit * rec.product_uom_qty" />
-            <t t-set="oper2" t-value="oper1 / piez_ent" />
-            <precioUnitarioPieza t-esc="oper2" />
-            <Impuestos>
-              <t t-set="cont" t-value="0" />
-              <t t-foreach="rec.tax_id"  t-as="tc">
-                <t t-foreach="tc.tag_ids" t-as="tg">
-                  <t t-if="record.partner_id.most_ieps == False">
-                    <t t-if="tg.name != 'IEPS'">
-                      <t t-set="resultimp" t-value="rec.price_unit" />
-                      <t t-set="resoperimp" t-value="resultimp * (tc.amount / 100)"  />
-                      <t t-set="cont" t-value="cont + resoperimp"  />
-                    </t>
-                  </t>
-                  <t t-else="">
-                    <t t-set="resultimp" t-value="rec.price_unit" />
-                    <t t-set="resoperimp" t-value="resultimp * (tc.amount / 100)"  />
-                    <t t-set="cont" t-value="cont + resoperimp"  />
-                  </t>
-                </t>
-              </t>
-              <totalImpuestosTrasladados t-esc="cont" />
-              <Traslados>
-                <t t-foreach="rec.tax_id" t-as="tac">
-                  <t t-foreach="tac.tag_ids" t-as="tag">
-                    <t t-set="resultimpuest" t-value="rec.price_unit" />
-                    <t t-if="record.partner_id.most_ieps == False" >
-                      <t t-if="tag.name != 'IEPS'" >
-                        <Traslado>
-                          <impuesto t-esc="tag.name" />
-                          <tasa t-esc="tac.amount" />
-                          <importe t-esc="resultimpuest * (tac.amount / 100)" />
-                        </Traslado>
-                      </t>
-                    </t>
-                    <t t-else="">
-                      <Traslado>
-                        <impuesto t-esc="tag.name" />
-                        <importe t-esc="tac.amount" />
-                      </Traslado>
-                    </t>
-                  </t>
-                </t>
-              </Traslados>
-            </Impuestos>
-          </Producto>
-        </t>
-        <fechaDeEntrega t-field="record.field_sales.date_of_deli" />
-        <numeroOrden t-field="record.field_sales.number_order" />
-        <fechaPedidoCliente t-field="record.date_invoice" />
-        <camppAddic t-field="record.field_sales.field_add_capture" />
-      </Detalle>
-    </Documento>
-</template>
-
-<!-- ADDENDA TIENDAS3B -->
-
-<?xml version="1.0"?>
-<template name="TiendasTresB" t-name="add.addenda_tiendasTresB">
+<template name="Proveedora del panadero" t-name="add.proveedora">
   <requestForPayment type="SimpleInvoiceType" contentVersion="1.3.1" documentStructureVersion="AMC7.1" documentStatus="ORIGINAL">
     <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
     <requestForPaymentIdentification>
@@ -370,6 +275,107 @@
     <numeroOrden t-field="record.field_sales.number_order" />
     <numeroTienda t-field="record.partner_id.number_store" />
   </requestForPayment>
+</template>
+
+<!-- CHEDRAUI -->
+
+<?xml version="1.0"?>
+<template name="Chedraui" t-name="add.chedraui">
+    <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
+
+    <t t-set="versi" t-value="xml.get('Version')" />
+    <t t-set="serie" t-value="xml.get('Serie')" />
+    <t t-set="folio" t-value="xml.get('Folio')" />
+    <t t-set="fecha" t-value="xml.get('Fecha')" />
+    <t t-set="nocer" t-value="xml.get('NoCertificado')" />
+    <t t-set="metpa" t-value="xml.get('MetodoPago')" />
+    <t t-set="formp" t-value="xml.get('FormaPago')" />
+    <t t-set="condp" t-value="xml.get('CondicionesDePago')" />
+    <t t-set="subto" t-value="xml.get('SubTotal')" />
+    <t t-set="moned" t-value="xml.get('Moneda')" />
+    <!-- <t t-set="tipca" t-value="xml.get('TipoCambio')" /> -->
+    <t t-set="total" t-value="xml.get('Total')" />
+    <t t-set="tipoc" t-value="xml.get('TipoDeComprobante')" />
+    <t t-set="lugex" t-value="xml.get('LugarExpedicion')" />
+
+    <!-- Datos emisor -->
+    <t t-set="nameem" t-value="xml.Emisor.get('Nombre')" />
+    <t t-set="rfcem" t-value="xml.Emisor.get('Rfc')" />
+    <t t-set="regfi" t-value="xml.Emisor.get('RegimenFiscal')" />
+
+    <!-- Datos receptor -->
+    <t t-set="rfcrec" t-value="xml.Receptor.get('Rfc')" />
+    <t t-set="namrec" t-value="xml.Receptor.get('Nombre')" />
+    <t t-set="usocfd" t-value="xml.Receptor.get('UsoCFDI')" />
+
+    <!-- Datos del H2 -->
+    <t t-set="taghcero" t-value="'[H0]'+'|'+rfcrec+'|'+nocer+'|'+' '" />
+
+    <!-- Datos del H1 -->
+    <t t-set="taghpri" t-value="'[H1]'+'|'+serie+'|'+folio+'|'+fecha+'|'+' '" />
+
+    <!-- Datos de la empresa -->
+    <t t-set="street" t-value="record.company_id.street_name" />
+    <!-- <t t-set="reference" t-value="record.company_id.street2" /> -->
+    <t t-set="numext" t-value="record.company_id.street_number" />
+    <t t-set="numint" t-value="record.company_id.street_number2" />
+    <t t-set="colony" t-value="record.company_id.l10n_mx_edi_colony" />
+    <t t-set="locality" t-value="record.company_id.l10n_mx_edi_locality" />
+    <t t-set="city" t-value="record.company_id.city" />
+    <t t-set="state" t-value="record.company_id.state_id.name" />
+    <t t-set="country" t-value="record.company_id.country_id.name" />
+    <t t-set="codpost" t-value="record.company_id.zip" />
+    <t t-set="taghdos" t-value="'[H3]'+'|'+nameem+'|'+street+'|'+numext+'|'+numint+'|'+colony+'|'+locality+'|'+city+'|'+state+
+    '|'+country+'|'+codpost+'|'+' '" />
+
+    <!-- Datos del cliente -->
+    <t t-set="namecli" t-value="record.partner_id.name" />
+    <t t-set="streetcli" t-value="record.partner_id.street_name" />
+    <t t-set="referencecli" t-value="record.partner_id.street2" />
+    <t t-set="numextcli" t-value="record.partner_id.street_number" />
+    <t t-set="numintcli" t-value="record.partner_id.street_number2" />
+    <t t-set="colonycli" t-value="record.partner_id.l10n_mx_edi_colony" />
+    <t t-set="localitycli" t-value="record.partner_id.l10n_mx_edi_locality" />
+    <t t-set="citycli" t-value="record.partner_id.city" />
+    <t t-set="statecli" t-value="record.partner_id.state_id.name" />
+    <t t-set="countrycli" t-value="record.partner_id.country_id.name" />
+    <t t-set="codpostcli" t-value="record.partner_id.zip" />
+    <t t-set="taghtres" t-value="'[H4]'+'|'+namecli+'|'+streetcli+'|'+numextcli+'|'+numintcli+'|'+colonycli+'|'+localitycli+'|'+citycli+'|'+statecli+'|'
+    +countrycli+'|'+codpostcli+'|'+' '" />
+
+    <!-- Datos del lugar a entregar -->
+    <t t-set="phoneent" t-value="record.partner_shipping_id.phone" />
+    <t t-set="emailent" t-value="record.partner_shipping_id.email" />
+    <t t-set="nameent" t-value="record.partner_shipping_id.name" />
+    <t t-set="streetent" t-value="record.partner_shipping_id.street_name" />
+    <t t-set="numextent" t-value="record.partner_shipping_id.street_number" />
+    <t t-set="numintent" t-value="record.partner_shipping_id.street_number2" />
+    <t t-set="colonyent" t-value="record.partner_shipping_id.l10n_mx_edi_colony" />
+    <t t-set="localityent" t-value="record.partner_shipping_id.l10n_mx_edi_locality" />
+    <t t-set="cityent" t-value="record.partner_shipping_id.city" />
+    <t t-set="stateent" t-value="record.partner_shipping_id.state_id.name" />
+    <t t-set="countryent" t-value="record.partner_shipping_id.country_id.name" />
+    <t t-set="codpostent" t-value="record.partner_shipping_id.zip" />
+    <t t-set="taghcinco" t-value="'[H5]'+'|'+nameent+'|'+streetent+'|'+numextent+'|'+numintent+'|'+colonyent+'|'
+    +localityent+'|'+cityent+'|'+stateent+'|'+countryent+'|'+codpostent+'|'+' '" />
+    
+    <t t-set="tagprod" t-value="''.join(map(lambda x: ('[D]'+x.product_id.l10n_mx_edi_code_sat_id.code+'|'+x.product_id.barcode
+      +'|'+x.product_id.name+'|'+str(x.product_uom_qty)+'|'+x.product_uom.name+'|'+str(x.price_unit)),
+      record.fields_sales.order_line))"/>
+
+    <t t-set="tagpen" t-value="'[CO]'+'|'+versi+'|'+serie+'|'+folio+'|'+fecha+'|'+formp+'|'+nocer+'|'+condp+'|'+subto+'|'
+    +moned+'|'+total+'|'+tipoc+'|'+metpa+'|'+lugex+'|'+rfcem+'|'+nameem+'|'+regfi+'|'+rfcrec+'|'+namrec+'|'+usocfd+'|' " />
+    
+    <t t-set="valorconcept" t-value="''.join(map(lambda x: (x.get('ClaveProdServ')+'|'+x.get('NoIdentificacion')
+      +'|'+x.get('Cantidad')+'|'+x.get('ClaveUnidad')+'|'+x.get('Unidad')+'|'+x.get('Descripcion')+'|'+
+      x.get('ValorUnitario')+'|'+x.get('Importe')+'|'+''.join(map(lambda i:(i.get('Base')+'|'+i.get('Impuesto')
+      +'|'+i.get('TipoFactor')+'|'+i.get('TasaOCuota')+'|'+i.get('Importe')+'|'), x.Impuestos.Traslados.Traslado))),
+      xml.Conceptos.Concepto))"/>
+
+    <t t-set="tagfinal" t-value="taghcero+taghpri+taghdos+taghtres+taghcinco+tagprod+tagpen+valorconcept"/>
+
+    <EDCINOVICE t-esc="tagfinal" />
+
 </template>
 
 <!-- SAN FRANCISCO DE ASIS -->
@@ -538,10 +544,287 @@
   </requestForPayment>
 </template>
 
-<!-- PROVEEDORA DEL PANADERO -->
+<!-- SIETE 24 -->
 
 <?xml version="1.0"?>
-<template name="Proveedora del panadero" t-name="add.proveedora">
+<template name="7/24" t-name="add.addenda_7/24_01">
+  <Referencia724>
+    <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
+    <t t-set="rfc" t-value="xml.Emisor.get('Rfc')" />
+    <t t-set="serie" t-value="xml.get('Serie')" />
+    <t t-set="folio" t-value="xml.get('Folio')" />
+    <t t-set="suc" t-value="record.partner_id.type_suc" />
+    <t t-set="num" t-value="record.partner_id.number_sucursal" />
+    <referencia t-esc="rfc+','+suc+num+','+serie+folio" />
+    <fechaDeEntrega t-field="record.field_sales.date_of_deli" t-options='{"format": "yyyy/MM/dd"}' />
+    <numeroOrden t-field="record.field_sales.number_order" />
+  </Referencia724>
+</template>
+
+<!-- SORIANA FACTURA EXTEMPORANEA -->
+
+<?xml version="1.0"?>
+<template name="Soriana" t-name="add.soriana">
+
+  <DSCargaRemisionProv>
+
+    <!-- Variables de datos restantes -->
+    <t t-set="sdato" t-value="'FaltaDato'" />
+    
+    <!-- Datos del xml generado por el SAT -->
+    <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
+    <t t-set="serie" t-value="xml.get('Serie')" />
+    <t t-set="folio" t-value="xml.get('Folio')" />
+    <t t-set="subtotal" t-value="xml.get('SubTotal')" />
+    <t t-set="descuentos" t-value="xml.get('Descuento')" />
+    <t t-set="total" t-value="xml.get('Total')" />
+    
+    <!-- Cantidad de productos -->
+    <t t-set="cantidadent" t-value="0" />
+    <t t-set="cantcont" t-value="0" />
+    <t t-foreach="record.fields_sales.order_line" t-as="rec" >
+      <t t-set="cantidadent" t-value="cantidadent + rec.product_uom_qty" />
+      <t t-set="cantcont" t-value="cantcont + 1" />
+    </t>
+    
+    <Remision Id="Remision1" RowOrder="0">
+      <Proveedor t-field="record.partner_id.number_provideer" />
+      <Remision t-esc="serie+'-'+str(folio)" />
+      <Consecutivo t-esc="sdato" />
+      <FechaRemision t-field="record.date_invoice" />
+      <Tienda t-field="record.partner_id.number_store" />
+      <TipoMoneda t-esc="sdato" />
+      <TipoBulto t-esc="sdato" />
+      <EntregaMercancia t-esc="sdato" />
+      <CumpleReqFiscales t-esc="sdato" />
+      <CantidadBultos t-esc="int(cantidadent)" />
+      <SubTotal t-esc="subtotal" />
+      <Descuentos t-esc="descuentos" />
+      <IEPS t-esc="sdato" />
+      <IVA t-esc="sdato" />
+      <OtrosImpuestos t-esc="sdato" />
+      <Total t-esc="total" />
+      <CantidadPedidos t-esc="sdato" />
+      <FechaEntregaMercancia t-field="record.fields_sales.date_of_deli" />
+      <Cita t-field="record.fields_sales.number_appoi" />
+      <FolioNotaEntrada t-field="record.fields_sales.folio_note_entry" />
+    </Remision>
+    
+    <Pedidos Id="Pedidos1" RowOrder="1">
+      <Proveedor t-field="record.partner_id.number_provideer" />
+      <Remision t-esc="serie+'-'+str(folio)" />
+      <FolioPedido t-field="record.fields_sales.number_order" />
+      <Tienda t-field="record.partner_id.number_store" />
+      <CantidadArticulos t-esc="int(cantcont)" />
+    </Pedidos>
+    
+    <!-- Articulos -->
+    <t t-set="idrowart" t-value="0" />
+    <t t-set="porcentajeiva" t-value="0" />
+    <t t-set="porcentajeieps" t-value="0" />
+    <t t-foreach="record.fields_sales.order_line" t-as="rec" >
+      <t t-set="idrowart" t-value="idrowart + 1" />
+      <Articulos>
+        <Id t-esc="'Articulos'+str(idrowart)" />
+        <RowOrder t-esc="str(idrowart)" />
+        <Proveedor t-field="record.partner_id.number_provideer" />
+        <Remision t-esc="serie+'-'+str(folio)" />
+        <FolioPedido t-field="record.fields_sales.number_order" />
+        <Tienda t-field="record.partner_id.number_store" />
+        <Codigo t-esc="rec.product_id.barcode" />
+        <CantidadUnidadCompra t-esc="rec.product_uom_qty" />
+        <CostoNetoUnidadCompra t-esc="rec.price_subtotal" />
+        <t t-foreach="rec.tax_id" t-as="tc" >
+          <t t-foreach="tc.tag_ids" t-as="tg" >
+            <t t-if="tg.name == 'IVA'">
+              <t t-set="porcentajeiva" t-value="tc.amount" />
+            </t>
+            <t t-if="tg.name == 'IEPS'">
+              <t t-set="porcentajeieps" t-value="tc.amount" />
+            </t>
+          </t>
+        </t>
+        <PorcentajeIEPS t-esc="porcentajeieps" />
+        <PorcentajeIVA t-esc="porcentajeiva" />
+      </Articulos>
+    </t>
+
+  </DSCargaRemisionProv>
+
+</template>
+
+<!-- SORIANA FACTURA NORMAL -->
+
+<?xml version="1.0"?>
+<template name="Soriana" t-name="add.soriana">
+
+  <DSCargaRemisionProv>
+
+    <!-- Variables de datos restantes -->
+    <t t-set="sdato" t-value="'FaltaDato'" />
+    
+    <!-- Datos del xml generado por el SAT -->
+    <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
+    <t t-set="serie" t-value="xml.get('Serie')" />
+    <t t-set="folio" t-value="xml.get('Folio')" />
+    <t t-set="subtotal" t-value="xml.get('SubTotal')" />
+    <t t-set="descuentos" t-value="xml.get('Descuento')" />
+    <t t-set="total" t-value="xml.get('Total')" />
+    
+    <!-- Cantidad de productos -->
+    <t t-set="cantidadent" t-value="0" />
+    <t t-set="cantcont" t-value="0" />
+    <t t-foreach="record.fields_sales.order_line" t-as="rec" >
+      <t t-set="cantidadent" t-value="cantidadent + rec.product_uom_qty" />
+      <t t-set="cantcont" t-value="cantcont + 1" />
+    </t>
+    
+    <Remision Id="Remision1" RowOrder="0">
+      <Proveedor t-field="record.partner_id.number_provideer" />
+      <Remision t-esc="serie+'-'+str(folio)" />
+      <Consecutivo t-esc="sdato" />
+      <FechaRemision t-field="record.date_invoice" />
+      <Tienda t-field="record.partner_id.number_store" />
+      <TipoMoneda t-esc="sdato" />
+      <TipoBulto t-esc="sdato" />
+      <EntregaMercancia t-esc="sdato" />
+      <CumpleReqFiscales t-esc="sdato" />
+      <CantidadBultos t-esc="int(cantidadent)" />
+      <SubTotal t-esc="subtotal" />
+      <Descuentos t-esc="descuentos" />
+      <IEPS t-esc="sdato" />
+      <IVA t-esc="sdato" />
+      <OtrosImpuestos t-esc="sdato" />
+      <Total t-esc="total" />
+      <CantidadPedidos t-esc="sdato" />
+      <FechaEntregaMercancia t-field="record.fields_sales.date_of_deli" />
+      <Cita t-field="record.fields_sales.number_appoi" />
+    </Remision>
+    
+    <Pedidos Id="Pedidos1" RowOrder="1">
+      <Proveedor t-field="record.partner_id.number_provideer" />
+      <Remision t-esc="serie+'-'+str(folio)" />
+      <FolioPedido t-field="record.fields_sales.number_order" />
+      <Tienda t-field="record.partner_id.number_store" />
+      <CantidadArticulos t-esc="int(cantcont)" />
+    </Pedidos>
+    
+    <!-- Articulos -->
+    <t t-set="idrowart" t-value="0" />
+    <t t-set="porcentajeiva" t-value="0" />
+    <t t-set="porcentajeieps" t-value="0" />
+    <t t-foreach="record.fields_sales.order_line" t-as="rec" >
+      <t t-set="idrowart" t-value="idrowart + 1" />
+      <Articulos>
+        <Id t-esc="'Articulos'+str(idrowart)" />
+        <RowOrder t-esc="str(idrowart)" />
+        <Proveedor t-field="record.partner_id.number_provideer" />
+        <Remision t-esc="serie+'-'+str(folio)" />
+        <FolioPedido t-field="record.fields_sales.number_order" />
+        <Tienda t-field="record.partner_id.number_store" />
+        <Codigo t-esc="rec.product_id.barcode" />
+        <CantidadUnidadCompra t-esc="rec.product_uom_qty" />
+        <CostoNetoUnidadCompra t-esc="rec.price_subtotal" />
+        <t t-foreach="rec.tax_id" t-as="tc" >
+          <t t-foreach="tc.tag_ids" t-as="tg" >
+            <t t-if="tg.name == 'IVA'">
+              <t t-set="porcentajeiva" t-value="tc.amount" />
+            </t>
+            <t t-if="tg.name == 'IEPS'">
+              <t t-set="porcentajeieps" t-value="tc.amount" />
+            </t>
+          </t>
+        </t>
+        <PorcentajeIEPS t-esc="porcentajeieps" />
+        <PorcentajeIVA t-esc="porcentajeiva" />
+      </Articulos>
+    </t>
+
+  </DSCargaRemisionProv>
+
+</template>
+
+<!-- SUPERPRECIO -->
+
+<?xml version="1.0"?>
+<template name="SuperPrecio" t-name="add.addenda_superprecio01">
+    <Documento>
+      <tipoComprobante>FE</tipoComprobante>
+      <plazoPago t-field="record.field_sales.payment_term_id" />
+      <t t-if="record.field_sales.note == ''">
+        <observaciones>NINGUNA</observaciones>
+      </t>
+      <t t-else="">
+        <observaciones t-field="record.field_sales.note" />
+      </t>
+      <Detalle>
+        <folio t-field="record.reference" />
+        <t t-foreach="record.field_sales.order_line" t-as="rec">
+          <Producto>
+            <codigoBarras t-esc="rec.product_id.barcode" />
+            <cajasEntregadas t-esc="rec.product_uom_qty" />
+            <precioUnitarioCaja t-esc="rec.price_unit" />
+            <t t-set="piez_ent" t-value="rec.product_id.uom_id.factor * rec.product_uom_qty" />
+            <piezasEntregadas t-esc="piez_ent" />
+            <t t-set="oper1" t-value="rec.price_unit * rec.product_uom_qty" />
+            <t t-set="oper2" t-value="oper1 / piez_ent" />
+            <precioUnitarioPieza t-esc="oper2" />
+            <Impuestos>
+              <t t-set="cont" t-value="0" />
+              <t t-foreach="rec.tax_id"  t-as="tc">
+                <t t-foreach="tc.tag_ids" t-as="tg">
+                  <t t-if="record.partner_id.most_ieps == False">
+                    <t t-if="tg.name != 'IEPS'">
+                      <t t-set="resultimp" t-value="rec.price_unit" />
+                      <t t-set="resoperimp" t-value="resultimp * (tc.amount / 100)"  />
+                      <t t-set="cont" t-value="cont + resoperimp"  />
+                    </t>
+                  </t>
+                  <t t-else="">
+                    <t t-set="resultimp" t-value="rec.price_unit" />
+                    <t t-set="resoperimp" t-value="resultimp * (tc.amount / 100)"  />
+                    <t t-set="cont" t-value="cont + resoperimp"  />
+                  </t>
+                </t>
+              </t>
+              <totalImpuestosTrasladados t-esc="cont" />
+              <Traslados>
+                <t t-foreach="rec.tax_id" t-as="tac">
+                  <t t-foreach="tac.tag_ids" t-as="tag">
+                    <t t-set="resultimpuest" t-value="rec.price_unit" />
+                    <t t-if="record.partner_id.most_ieps == False" >
+                      <t t-if="tag.name != 'IEPS'" >
+                        <Traslado>
+                          <impuesto t-esc="tag.name" />
+                          <tasa t-esc="tac.amount" />
+                          <importe t-esc="resultimpuest * (tac.amount / 100)" />
+                        </Traslado>
+                      </t>
+                    </t>
+                    <t t-else="">
+                      <Traslado>
+                        <impuesto t-esc="tag.name" />
+                        <importe t-esc="tac.amount" />
+                      </Traslado>
+                    </t>
+                  </t>
+                </t>
+              </Traslados>
+            </Impuestos>
+          </Producto>
+        </t>
+        <fechaDeEntrega t-field="record.field_sales.date_of_deli" />
+        <numeroOrden t-field="record.field_sales.number_order" />
+        <fechaPedidoCliente t-field="record.date_invoice" />
+        <camppAddic t-field="record.field_sales.field_add_capture" />
+      </Detalle>
+    </Documento>
+</template>
+
+<!-- TIENDAS 3B -->
+
+<?xml version="1.0"?>
+<template name="TiendasTresB" t-name="add.addenda_tiendasTresB">
   <requestForPayment type="SimpleInvoiceType" contentVersion="1.3.1" documentStructureVersion="AMC7.1" documentStatus="ORIGINAL">
     <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
     <requestForPaymentIdentification>
@@ -664,265 +947,7 @@
   </requestForPayment>
 </template>
 
-<!-- CHEDRAUI -->
-
-<?xml version="1.0"?>
-<template name="Chedraui" t-name="add.chedraui">
-  <EDCINVOICE>
-    <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
-    <!-- Datos del XML generado al timbrar -->
-    <t t-set="serie" t-value="xml.get('Serie')" />
-    <t t-set="folio" t-value="xml.get('Folio')" />
-    <t t-set="fecha" t-value="xml.get('Fecha')" />
-    <t t-set="nameem" t-value="xml.Emisor.get('Nombre')" />
-    <t t-set="rfcem" t-value="xml.Emisor.get('Rfc')" />
-    <t t-set="lugex" t-value="xml.Emisor.get('LugarExpedicion')" />
-    <t t-set="metpa" t-value="xml.get('MetodoPago')" />
-    <testeo t-esc="h1c" />
-    <tmp t-esc="'[H1]'+'|'+serie+'|'+folio+'|'+fecha" />
-    <serie t-esc="serie" />
-    <folio t-esc="folio" />
-    <fecha t-esc="fecha" />
-    <!-- Datos de la empresa -->
-    <t t-set="street" t-value="record.company_id.street_name" />
-    <t t-set="reference" t-value="record.company_id.street2" />
-    <t t-set="numext" t-value="record.company_id.street_number" />
-    <t t-set="numint" t-value="record.company_id.street_number2" />
-    <t t-set="colony" t-value="record.company_id.l10n_mx_edi_colony" />
-    <t t-set="locality" t-value="record.company_id.l10n_mx_edi_locality" />
-    <t t-set="city" t-value="record.company_id.city" />
-    <t t-set="state" t-value="record.company_id.state_id.name" />
-    <t t-set="country" t-value="record.company_id.country_id.name" />
-    <t t-set="codpost" t-value="record.company_id.zip" />
-    <tagH3 t-esc="'[H3]'+'|'+nameem+'|'+street+'|'+numext+'|'+numint+'|'+colony+'|'+locality+'|'+city+'|'+state+'|'+country+'|'+codpost+'|' " />
-    <!-- Datos del cliente -->
-    <t t-set="namecli" t-value="record.partner_id.name" />
-    <t t-set="streetcli" t-value="record.partner_id.street_name" />
-    <t t-set="referencecli" t-value="record.partner_id.street2" />
-    <t t-set="numextcli" t-value="record.partner_id.street_number" />
-    <t t-set="numintcli" t-value="record.partner_id.street_number2" />
-    <t t-set="colonycli" t-value="record.partner_id.l10n_mx_edi_colony" />
-    <t t-set="localitycli" t-value="record.partner_id.l10n_mx_edi_locality" />
-    <t t-set="citycli" t-value="record.partner_id.city" />
-    <t t-set="statecli" t-value="record.partner_id.state_id.name" />
-    <t t-set="countrycli" t-value="record.partner_id.country_id.name" />
-    <t t-set="codpostcli" t-value="record.partner_id.zip" />
-    <tagH4 t-esc="'[H4]'+'|'+namecli+'|'+streetcli+'|'+numextcli+'|'+numintcli+'|'+colonycli+'|'+localitycli+'|'+citycli+'|'+statecli+'|'+countrycli+'|'+codpostcli+'|' " />
-    <!-- Datos del lugar a entregar -->
-    <t t-set="phoneent" t-value="record.partner_shipping_id.phone" />
-    <t t-set="emailent" t-value="record.partner_shipping_id.email" />
-    <t t-set="nameent" t-value="record.partner_shipping_id.name" />
-    <t t-set="streetent" t-value="record.partner_shipping_id.street_name" />
-    <t t-set="numextent" t-value="record.partner_shipping_id.street_number" />
-    <t t-set="numintent" t-value="record.partner_shipping_id.street_number2" />
-    <t t-set="colonyent" t-value="record.partner_shipping_id.l10n_mx_edi_colony" />
-    <t t-set="localityent" t-value="record.partner_shipping_id.l10n_mx_edi_locality" />
-    <t t-set="cityent" t-value="record.partner_shipping_id.city" />
-    <t t-set="stateent" t-value="record.partner_shipping_id.state_id.name" />
-    <t t-set="countryent" t-value="record.partner_shipping_id.country_id.name" />
-    <t t-set="codpostent" t-value="record.partner_shipping_id.zip" />
-    <tagH5 t-esc="'[H5]'+'|'+nameent+'|'+streetent+'|'+numextent+'|'+numintent+'|'+colonyent+'|'+localityent+'|'+cityent+'|'+stateent+'|'+countryent+'|'+codpostent+'|' " />
-
-  </EDCINVOICE>
-</template>
-
-
-
-<?xml version="1.0"?>
-<template name="Chedraui" t-name="add.chedraui">
-    <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
-
-    <t t-set="versi" t-value="xml.get('Version')" />
-    <t t-set="serie" t-value="xml.get('Serie')" />
-    <t t-set="folio" t-value="xml.get('Folio')" />
-    <t t-set="fecha" t-value="xml.get('Fecha')" />
-    <t t-set="nocer" t-value="xml.get('NoCertificado')" />
-    <t t-set="metpa" t-value="xml.get('MetodoPago')" />
-    <t t-set="formp" t-value="xml.get('FormaPago')" />
-    <t t-set="condp" t-value="xml.get('CondicionesDePago')" />
-    <t t-set="subto" t-value="xml.get('SubTotal')" />
-    <t t-set="moned" t-value="xml.get('Moneda')" />
-    <!-- <t t-set="tipca" t-value="xml.get('TipoCambio')" /> -->
-    <t t-set="total" t-value="xml.get('Total')" />
-    <t t-set="tipoc" t-value="xml.get('TipoDeComprobante')" />
-    <t t-set="lugex" t-value="xml.get('LugarExpedicion')" />
-
-    <!-- Datos emisor -->
-    <t t-set="nameem" t-value="xml.Emisor.get('Nombre')" />
-    <t t-set="rfcem" t-value="xml.Emisor.get('Rfc')" />
-    <t t-set="regfi" t-value="xml.Emisor.get('RegimenFiscal')" />
-
-    <!-- Datos receptor -->
-    <t t-set="rfcrec" t-value="xml.Receptor.get('Rfc')" />
-    <t t-set="namrec" t-value="xml.Receptor.get('Nombre')" />
-    <t t-set="usocfd" t-value="xml.Receptor.get('UsoCFDI')" />
-
-    <!-- Datos del H2 -->
-    <t t-set="taghcero" t-value="'[H0]'+'|'+rfcrec+'|'+nocer+'|'+' '" />
-
-    <!-- Datos del H1 -->
-    <t t-set="taghpri" t-value="'[H1]'+'|'+serie+'|'+folio+'|'+fecha+'|'+' '" />
-
-    <!-- Datos de la empresa -->
-    <t t-set="street" t-value="record.company_id.street_name" />
-    <!-- <t t-set="reference" t-value="record.company_id.street2" /> -->
-    <t t-set="numext" t-value="record.company_id.street_number" />
-    <t t-set="numint" t-value="record.company_id.street_number2" />
-    <t t-set="colony" t-value="record.company_id.l10n_mx_edi_colony" />
-    <t t-set="locality" t-value="record.company_id.l10n_mx_edi_locality" />
-    <t t-set="city" t-value="record.company_id.city" />
-    <t t-set="state" t-value="record.company_id.state_id.name" />
-    <t t-set="country" t-value="record.company_id.country_id.name" />
-    <t t-set="codpost" t-value="record.company_id.zip" />
-    <t t-set="taghdos" t-value="'[H3]'+'|'+nameem+'|'+street+'|'+numext+'|'+numint+'|'+colony+'|'+locality+'|'+city+'|'+state+
-    '|'+country+'|'+codpost+'|'+' '" />
-
-    <!-- Datos del cliente -->
-    <t t-set="namecli" t-value="record.partner_id.name" />
-    <t t-set="streetcli" t-value="record.partner_id.street_name" />
-    <t t-set="referencecli" t-value="record.partner_id.street2" />
-    <t t-set="numextcli" t-value="record.partner_id.street_number" />
-    <t t-set="numintcli" t-value="record.partner_id.street_number2" />
-    <t t-set="colonycli" t-value="record.partner_id.l10n_mx_edi_colony" />
-    <t t-set="localitycli" t-value="record.partner_id.l10n_mx_edi_locality" />
-    <t t-set="citycli" t-value="record.partner_id.city" />
-    <t t-set="statecli" t-value="record.partner_id.state_id.name" />
-    <t t-set="countrycli" t-value="record.partner_id.country_id.name" />
-    <t t-set="codpostcli" t-value="record.partner_id.zip" />
-    <t t-set="taghtres" t-value="'[H4]'+'|'+namecli+'|'+streetcli+'|'+numextcli+'|'+numintcli+'|'+colonycli+'|'+localitycli+'|'+citycli+'|'+statecli+'|'
-    +countrycli+'|'+codpostcli+'|'+' '" />
-
-    <!-- Datos del lugar a entregar -->
-    <t t-set="phoneent" t-value="record.partner_shipping_id.phone" />
-    <t t-set="emailent" t-value="record.partner_shipping_id.email" />
-    <t t-set="nameent" t-value="record.partner_shipping_id.name" />
-    <t t-set="streetent" t-value="record.partner_shipping_id.street_name" />
-    <t t-set="numextent" t-value="record.partner_shipping_id.street_number" />
-    <t t-set="numintent" t-value="record.partner_shipping_id.street_number2" />
-    <t t-set="colonyent" t-value="record.partner_shipping_id.l10n_mx_edi_colony" />
-    <t t-set="localityent" t-value="record.partner_shipping_id.l10n_mx_edi_locality" />
-    <t t-set="cityent" t-value="record.partner_shipping_id.city" />
-    <t t-set="stateent" t-value="record.partner_shipping_id.state_id.name" />
-    <t t-set="countryent" t-value="record.partner_shipping_id.country_id.name" />
-    <t t-set="codpostent" t-value="record.partner_shipping_id.zip" />
-    <t t-set="taghcinco" t-value="'[H5]'+'|'+nameent+'|'+streetent+'|'+numextent+'|'+numintent+'|'+colonyent+'|'
-    +localityent+'|'+cityent+'|'+stateent+'|'+countryent+'|'+codpostent+'|'+' '" />
-    
-    <t t-set="tagprod" t-value="''.join(map(lambda x: ('[D]'+x.product_id.l10n_mx_edi_code_sat_id.code+'|'+x.product_id.barcode+'|'+x.product_id.name+'|'+str(x.product_uom_qty)+'|'+x.product_uom.name+'|'+str(x.price_unit)+'|'), record.fields_sales.order_line))"/>
-
-    <t t-set="tagpen" t-value="'[CO]'+'|'+versi+'|'+serie+'|'+folio+'|'+fecha+'|'+formp+'|'+nocer+'|'+condp+'|'+subto+'|'
-    +moned+'|'+total+'|'+tipoc+'|'+metpa+'|'+lugex+'|'+rfcem+'|'+nameem+'|'+regfi+'|'+rfcrec+'|'+namrec+'|'+usocfd+'|' " />
-    
-    <t t-set="valorconcept" t-value="''.join(map(lambda x: (x.get('ClaveProdServ')+'|'+x.get('NoIdentificacion')+'|'+x.get('Cantidad')+'|'+x.get('ClaveUnidad')+'|'+x.get('Unidad')+'|'+x.get('Descripcion')+'|'+x.get('ValorUnitario')+'|'+x.get('Importe')+'|'+''.join(map(lambda i:(i.get('Base')+'|'+i.get('Impuesto')+'|'+i.get('TipoFactor')+'|'+i.get('TasaOCuota')+'|'+i.get('Importe')+'|'), x.Impuestos.Traslados.Traslado))), xml.Conceptos.Concepto))"/>
-
-    <t t-set="tagfinal" t-value="taghcero+taghpri+taghdos+taghtres+taghcinco+tagprod+tagpen+valorconcept"/>
-
-    <EDCINOVICE t-esc="tagfinal" />
-
-    
-    
-</template>
-
-<?xml version="1.0"?>
-<template name="Chedraui" t-name="add.chedraui">
-    <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
-
-    <t t-set="versi" t-value="xml.get('Version')" />
-    <t t-set="serie" t-value="xml.get('Serie')" />
-    <t t-set="folio" t-value="xml.get('Folio')" />
-    <t t-set="fecha" t-value="xml.get('Fecha')" />
-    <t t-set="nocer" t-value="xml.get('NoCertificado')" />
-    <t t-set="metpa" t-value="xml.get('MetodoPago')" />
-    <t t-set="formp" t-value="xml.get('FormaPago')" />
-    <t t-set="condp" t-value="xml.get('CondicionesDePago')" />
-    <t t-set="subto" t-value="xml.get('SubTotal')" />
-    <t t-set="moned" t-value="xml.get('Moneda')" />
-    <!-- <t t-set="tipca" t-value="xml.get('TipoCambio')" /> -->
-    <t t-set="total" t-value="xml.get('Total')" />
-    <t t-set="tipoc" t-value="xml.get('TipoDeComprobante')" />
-    <t t-set="lugex" t-value="xml.get('LugarExpedicion')" />
-
-    <!-- Datos emisor -->
-    <t t-set="nameem" t-value="xml.Emisor.get('Nombre')" />
-    <t t-set="rfcem" t-value="xml.Emisor.get('Rfc')" />
-    <t t-set="regfi" t-value="xml.Emisor.get('RegimenFiscal')" />
-
-    <!-- Datos receptor -->
-    <t t-set="rfcrec" t-value="xml.Receptor.get('Rfc')" />
-    <t t-set="namrec" t-value="xml.Receptor.get('Nombre')" />
-    <t t-set="usocfd" t-value="xml.Receptor.get('UsoCFDI')" />
-
-    <!-- Datos del H2 -->
-    <t t-set="taghcero" t-value="'[H0]'+'|'+rfcrec+'|'+nocer+'|'+' '" />
-
-    <!-- Datos del H1 -->
-    <t t-set="taghpri" t-value="'[H1]'+'|'+serie+'|'+folio+'|'+fecha+'|'+' '" />
-
-    <!-- Datos de la empresa -->
-    <t t-set="street" t-value="record.company_id.street_name" />
-    <!-- <t t-set="reference" t-value="record.company_id.street2" /> -->
-    <t t-set="numext" t-value="record.company_id.street_number" />
-    <t t-set="numint" t-value="record.company_id.street_number2" />
-    <t t-set="colony" t-value="record.company_id.l10n_mx_edi_colony" />
-    <t t-set="locality" t-value="record.company_id.l10n_mx_edi_locality" />
-    <t t-set="city" t-value="record.company_id.city" />
-    <t t-set="state" t-value="record.company_id.state_id.name" />
-    <t t-set="country" t-value="record.company_id.country_id.name" />
-    <t t-set="codpost" t-value="record.company_id.zip" />
-    <t t-set="taghdos" t-value="'[H3]'+'|'+nameem+'|'+street+'|'+numext+'|'+numint+'|'+colony+'|'+locality+'|'+city+'|'+state+
-    '|'+country+'|'+codpost+'|'+' '" />
-
-    <!-- Datos del cliente -->
-    <t t-set="namecli" t-value="record.partner_id.name" />
-    <t t-set="streetcli" t-value="record.partner_id.street_name" />
-    <t t-set="referencecli" t-value="record.partner_id.street2" />
-    <t t-set="numextcli" t-value="record.partner_id.street_number" />
-    <t t-set="numintcli" t-value="record.partner_id.street_number2" />
-    <t t-set="colonycli" t-value="record.partner_id.l10n_mx_edi_colony" />
-    <t t-set="localitycli" t-value="record.partner_id.l10n_mx_edi_locality" />
-    <t t-set="citycli" t-value="record.partner_id.city" />
-    <t t-set="statecli" t-value="record.partner_id.state_id.name" />
-    <t t-set="countrycli" t-value="record.partner_id.country_id.name" />
-    <t t-set="codpostcli" t-value="record.partner_id.zip" />
-    <t t-set="taghtres" t-value="'[H4]'+'|'+namecli+'|'+streetcli+'|'+numextcli+'|'+numintcli+'|'+colonycli+'|'+localitycli+'|'+citycli+'|'+statecli+'|'
-    +countrycli+'|'+codpostcli+'|'+' '" />
-
-    <!-- Datos del lugar a entregar -->
-    <t t-set="phoneent" t-value="record.partner_shipping_id.phone" />
-    <t t-set="emailent" t-value="record.partner_shipping_id.email" />
-    <t t-set="nameent" t-value="record.partner_shipping_id.name" />
-    <t t-set="streetent" t-value="record.partner_shipping_id.street_name" />
-    <t t-set="numextent" t-value="record.partner_shipping_id.street_number" />
-    <t t-set="numintent" t-value="record.partner_shipping_id.street_number2" />
-    <t t-set="colonyent" t-value="record.partner_shipping_id.l10n_mx_edi_colony" />
-    <t t-set="localityent" t-value="record.partner_shipping_id.l10n_mx_edi_locality" />
-    <t t-set="cityent" t-value="record.partner_shipping_id.city" />
-    <t t-set="stateent" t-value="record.partner_shipping_id.state_id.name" />
-    <t t-set="countryent" t-value="record.partner_shipping_id.country_id.name" />
-    <t t-set="codpostent" t-value="record.partner_shipping_id.zip" />
-    <t t-set="taghcinco" t-value="'[H5]'+'|'+nameent+'|'+streetent+'|'+numextent+'|'+numintent+'|'+colonyent+'|'
-    +localityent+'|'+cityent+'|'+stateent+'|'+countryent+'|'+codpostent+'|'+' '" />
-    
-    <t t-set="tagprod" t-value="''.join(map(lambda x: ('[D]'+x.product_id.l10n_mx_edi_code_sat_id.code+'|'+x.product_id.barcode
-      +'|'+x.product_id.name+'|'+str(x.product_uom_qty)+'|'+x.product_uom.name+'|'+str(x.price_unit)),
-      record.fields_sales.order_line))"/>
-
-    <t t-set="tagpen" t-value="'[CO]'+'|'+versi+'|'+serie+'|'+folio+'|'+fecha+'|'+formp+'|'+nocer+'|'+condp+'|'+subto+'|'
-    +moned+'|'+total+'|'+tipoc+'|'+metpa+'|'+lugex+'|'+rfcem+'|'+nameem+'|'+regfi+'|'+rfcrec+'|'+namrec+'|'+usocfd+'|' " />
-    
-    <t t-set="valorconcept" t-value="''.join(map(lambda x: (x.get('ClaveProdServ')+'|'+x.get('NoIdentificacion')
-      +'|'+x.get('Cantidad')+'|'+x.get('ClaveUnidad')+'|'+x.get('Unidad')+'|'+x.get('Descripcion')+'|'+
-      x.get('ValorUnitario')+'|'+x.get('Importe')+'|'+''.join(map(lambda i:(i.get('Base')+'|'+i.get('Impuesto')
-      +'|'+i.get('TipoFactor')+'|'+i.get('TasaOCuota')+'|'+i.get('Importe')+'|'), x.Impuestos.Traslados.Traslado))),
-      xml.Conceptos.Concepto))"/>
-
-    <t t-set="tagfinal" t-value="taghcero+taghpri+taghdos+taghtres+taghcinco+tagprod+tagpen+valorconcept"/>
-
-    <EDCINOVICE t-esc="tagfinal" />
-
-    
-    
-</template>
+<!-- WALMART -->
 
 <?xml version="1.0"?>
 <template name="Walmart" t-name="add.walmart">
@@ -1134,43 +1159,4 @@
   <t t-set="tagfinal" t-value="taghcero+taghuno+taghdos+taghtres+taghcuatro+taghcinco+tagd+tags+tagco+tagse" />
   <EDCINVOICE t-esc="tagfinal" />
   
-</template>
-
-''.join(map(lambda t: (str(int(t.amount))+lin+str(0)+lin), x.tax_id)
-
-<?xml version="1.0"?>
-<template name="Soriana" t-name="add.soriana">
-
-  <DSCargaRemisionProv>
-
-    <!-- Variables de datos restantes -->
-    <t t-set="sdato" t-value="'FaltaDato'" />
-    <!-- Datos del xml generado por el SAT -->
-    <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
-    <t t-set="serie" t-value="xml.get('Serie')" />
-    <t t-set="folio" t-value="xml.get('Folio')" />
-    <t t-set="tipmoneda" t-value="xml.get('TipoCambio')"/>
-    <t t-set="subtotal" t-value="xml.get('SubTotal')" />
-    <t t-set="cantidadent" t-value="0" />
-    <t t-foreach="record.fields_sales.order_line" t-as="rec" >
-      <t t-set="cantidadent" t-value="cantidadent + rec.product_uom_qty">
-    </t>
-    
-    <Remision Id="Remision1" RowOrder="0">
-      <Proveedor t-field="record.partner_id.number_provideer" />
-      <Remision t-esc="serie+'-'+str(folio)" />
-      <Consecutivo t-esc="sdato" />
-      <FechaRemision t-esc="sdato" />
-      <Tienda t-field="record.partner_id.number_store" />
-      <TipoMoneda t-esc="tipmoneda" />
-      <TipoBulto t-esc="sdato" />
-      <EntregaMercancia t-esc="sdato" />
-      <CumpleReqFiscales t-esc="sdato" />
-      <CantidadBultos t-esc="int(cantidadent)" />
-      <SubTotal t-esc="subtotal" />
-
-    </Remision>
-
-  </DSCargaRemisionProv>
-
 </template>
