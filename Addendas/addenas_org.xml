@@ -1137,3 +1137,40 @@
 </template>
 
 ''.join(map(lambda t: (str(int(t.amount))+lin+str(0)+lin), x.tax_id)
+
+<?xml version="1.0"?>
+<template name="Soriana" t-name="add.soriana">
+
+  <DSCargaRemisionProv>
+
+    <!-- Variables de datos restantes -->
+    <t t-set="sdato" t-value="'FaltaDato'" />
+    <!-- Datos del xml generado por el SAT -->
+    <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
+    <t t-set="serie" t-value="xml.get('Serie')" />
+    <t t-set="folio" t-value="xml.get('Folio')" />
+    <t t-set="tipmoneda" t-value="xml.get('TipoCambio')"/>
+    <t t-set="subtotal" t-value="xml.get('SubTotal')" />
+    <t t-set="cantidadent" t-value="0" />
+    <t t-foreach="record.fields_sales.order_line" t-as="rec" >
+      <t t-set="cantidadent" t-value="cantidadent + rec.product_uom_qty">
+    </t>
+    
+    <Remision Id="Remision1" RowOrder="0">
+      <Proveedor t-field="record.partner_id.number_provideer" />
+      <Remision t-esc="serie+'-'+str(folio)" />
+      <Consecutivo t-esc="sdato" />
+      <FechaRemision t-esc="sdato" />
+      <Tienda t-field="record.partner_id.number_store" />
+      <TipoMoneda t-esc="tipmoneda" />
+      <TipoBulto t-esc="sdato" />
+      <EntregaMercancia t-esc="sdato" />
+      <CumpleReqFiscales t-esc="sdato" />
+      <CantidadBultos t-esc="int(cantidadent)" />
+      <SubTotal t-esc="subtotal" />
+
+    </Remision>
+
+  </DSCargaRemisionProv>
+
+</template>
