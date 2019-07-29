@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<Referencia724 t-name="add.addenda_7/24_01">
+  <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
+  <t t-set="rfc" t-value="xml.Emisor.get('Rfc')" />
+  <t t-set="serie" t-value="xml.get('Serie')" />
+  <t t-set="folio" t-value="xml.get('Folio')" />
+  <t t-set="suc" t-value="record.partner_id.type_suc" />
+  <t t-set="num" t-value="record.partner_id.number_sucursal" />
+  <referencia t-esc="rfc+','+str(suc)+str(num)+','+str(serie)+str(folio)" />
+  <fechaDeEntrega t-field="record.fields_sales.date_of_deli" t-options='{"format": "yyyy/MM/dd"}' />
+  <numeroOrden t-field="record.fields_sales.number_order" />
+</Referencia724>
