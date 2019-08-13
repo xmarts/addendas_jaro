@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<add724 t-name="add.addenda_7/24_01">
+<t t-name="add.addenda_7/24_01">
     <t t-set="xml" t-value="record.l10n_mx_edi_get_xml_etree()" />
     <t t-set="rfc" t-value="xml.Emisor.get('Rfc')" />
     <t t-set="serie" t-value="xml.get('Serie')" />
@@ -9,8 +9,7 @@
     <t t-set="referencia" t-value="rfc+','+str(suc)+str(num)+','+str(serie)+str(folio)" />
     <t t-set="fecha" t-value="record.fields_sales.date_of_deli" t-options='{"format": "yyyy-MM-dd"}' />
     <t t-set="orden" t-value="record.fields_sales.number_order" />
-    <Referencia724 
+    <add724Referencia724 
     schemaLocation="https://cfd.sifei.com.mx/publicar https://cfd.sifei.com.mx/publicar/Addenda724.xsd" xmlns="xsi" 
     t-att-Referencia="referencia" t-att-FechadeEntrega="fecha" t-att-NumerodeOrden="orden" xmlnsadd724="https://cfd.sifei.com.mx/publicar" />
-</add724>
-
+</t>
