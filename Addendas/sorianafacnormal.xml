@@ -78,8 +78,8 @@
         <FolioPedido t-field="record.fields_sales.number_order" />
         <Tienda t-field="record.partner_shipping_id.shipping_number_store" />
         <Codigo t-esc="rec.product_id.barcode" />
-        <CantidadUnidadCompra t-esc="rec.product_uom_qty" />
-        <CostoNetoUnidadCompra t-esc="rec.price_unit" />
+        <CantidadUnidadCompra t-esc="'%.2f'% rec.product_uom_qty" />
+        <CostoNetoUnidadCompra t-esc="'%.2f'% rec.price_unit" />
         <t t-foreach="rec.tax_id" t-as="tc" >
           <t t-foreach="tc.tag_ids" t-as="tg" >
             <t t-if="tg.name == 'IVA'">

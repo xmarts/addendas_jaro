@@ -6,17 +6,17 @@
       <entityType>INVOICE</entityType>
       <t t-set="folio" t-value="xml.get('Folio')" />
       <t t-set="serie" t-value="xml.get('Serie')" />
-      <uniqueCreatorIdentification t-esc="folio" />
+      <uniqueCreatorIdentification t-esc="str(serie)+str(folio)" />
     </requestForPaymentIdentification>
-    <specialInstruction code="zzz">
+    <specialInstruction code="ZZZ">
       <text t-field="record.amount_to_text" />
     </specialInstruction>
     <orderIdentification>
       <referenceIdentification type="ON" t-field="record.fields_sales.number_order" />
-      <ReferenceDate t-field="record.fields_sales.date_order" t-options='{"format": "yyyy-MM-dd"}' />
+      <ReferenceDate> </ReferenceDate>
     </orderIdentification>
     <AdditionalInformation>
-      <referenceIdentification type="ATZ">Faltadato</referenceIdentification>
+      <referenceIdentification type="ATZ"></referenceIdentification>
     </AdditionalInformation>
     <DeliveryNote>
       <referenceIdentification t-esc="str(serie)+str(folio)" />
@@ -31,23 +31,19 @@
       </contactInformation>
     </buyer>
     <seller>
-      <gln t-field="record.company_id.field_gln_company" />
-      <t t-set="numprov" t-value="record.partner_id.number_provideer" />
+      <gln t-field="record.partner_shipping_id.shipping_gln" />
+      <t t-set="numprov" t-value="record.partner_shipping_id.shipping_number_provider" />
       <alternatePartyIdentification type="SELLER_ASSIGNED_IDENTIFIER_FOR_A_PARTY" t-esc="numprov" />
     </seller>
     <shipTo>
-      <gln t-field="record.partner_id.number_sucursal"/>
+      <gln t-field="record.partner_shipping_id.shipping_number_store"/>
       <nameAndAddress>
-        <name t-field="record.partner_id.name" />
-        <streetAddressOne t-field="record.partner_id.street" />
-        <city t-field="record.partner_id.city"/>
-        <postalCode t-field="record.partner_id.zip"/>
+        <name t-field="record.partner_shipping_id.name" />
+        <streetAddressOne t-field="record.partner_shipping_id.street" />
+        <city t-field="record.partner_shipping_id.city"/>
+        <postalCode t-field="record.partner_shipping_id.zip"/>
       </nameAndAddress>
     </shipTo>
-    <currency t-att-currencyISOCode="record.currency_id.name">
-      <currencyFunction>BILLING_CURRENCY</currencyFunction>
-      <rateOfChange>1</rateOfChange>
-    </currency>
     <t t-set="cont" t-value="0" />
     <t t-foreach="record.fields_sales.order_line" t-as="rec" >
       <t t-set="cont" t-value="cont + 1" />
@@ -59,7 +55,7 @@
         <tradeItemDescriptionInformation>
           <longText t-esc="rec.product_id.name" />
         </tradeItemDescriptionInformation>
-        <invoicedQuantity unitOfMeasure="CA" t-esc="rec.product_uom_qty" />
+        <invoicedQuantity unitOfMeasure="Caja" t-esc="'%.2f'% rec.product_uom_qty" />
         <aditionalQuantity QuantityType="NUM_CONSUMER_UNITS" t-esc="rec.product_id.product_units" />
         <grossPrice>
           <Amount t-esc="'%.2f'% rec.price_unit" />
@@ -75,8 +71,9 @@
             <Amount t-esc="'%.2f'% rec.price_unit" />
           </grossAmount>
           <netAmount>
-            <t t-set="subtotalformat" t-value="rec.price_subtotal" />
-            <amount t-esc="'%.2f'% float(subtotalformat)" />
+            <amount t-esc="'%.2f'% rec.price_total" />
+            <!--<t t-set="subtotalformat" t-value="rec.price_subtotal" />
+            <amount t-esc="'%.2f'% float(subtotalformat)" />-->
           </netAmount>
         </totalLineAmount>
       </lineItem>
@@ -125,16 +122,18 @@
     </t>
     <t t-if="record.partner_id.show_ieps == False" >
       <tax t-att-type="namimp">
+        <t t-set="amtax" t-value="record.amount_tax" />
         <taxPercentage t-esc="'%.2f'% valiva" />
-        <taxAmount t-esc="'%.2f'% ivatotal" />
+        <taxAmount t-esc="'%.2f'% float(amtax)" />
         <taxCategory>TRANSFERIDO</taxCategory>
       </tax>
     </t>
     <t t-else="" >
       <t t-if="validiva == 1">
         <tax t-att-type="namimp">
+          <t t-set="amtax" t-value="record.amount_tax" />
           <taxPercentage t-esc="'%.2f'% valiva" />
-          <taxAmount t-esc="'%.2f'% ivatotal" />
+          <taxAmount t-esc="'%.2f'% float(amtax)" />
           <taxCategory>TRANSFERIDO</taxCategory>
         </tax>
       </t>
